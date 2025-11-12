@@ -1,0 +1,298 @@
+==================================================================================================
+
+# NSCOM03 Network Simulation Study Project
+# Threat Intelligence through APIs Visualization
+# Code Documentation (with the usage of /doc) 
+
+# Group 2 Members:
+# Aaron Abaniel
+# Luis Biacora
+# Isha Zulueta
+
+==================================================================================================
+
+Function List:
+1. save_fig
+2. fetch_virustotal
+3. fetch_abuseipdb
+4. fetch_otx
+5. prepare_tmpdir
+6. create_vt_detection_bar
+7. create_vt_pie
+8. create_comparison_bar
+9. build_whois_graph
+10. build_vt_resolution_graph
+11. create_abuseipdb_category_graph
+12. build_folium_map
+13. main
+
+==================================================================================================
+
+def save_fig(fig, name, dpi=150):
+    """
+    Save a Matplotlib figure to the temporary directory.
+
+    Parameters:
+        fig (matplotlib.figure.Figure): The figure object to save.
+        name (str): The filename for the saved image (e.g., 'chart.png').
+        dpi (int): Dots per inch for image resolution (default is 150).
+
+    Returns:
+        str: Full file path of the saved image.
+
+    Notes:
+        - Closes the figure after saving to prevent memory leaks.
+        - Uses global 'tmpdir' to determine the output folder.
+    """
+
+==================================================================================================
+
+def fetch_virustotal(ip: str, headers: dict):
+    """
+    Query VirusTotal API for detailed information about a given IP address.
+
+    Parameters:
+        ip (str): Target IPv4 address.
+        headers (dict): Request headers including the VirusTotal API key.
+
+    Returns:
+        tuple: A 10-element tuple containing:
+            - vt_data (dict): Full VirusTotal IP data.
+            - vt_stats (dict): Last analysis statistics.
+            - vt_stat_order (list): Ordered list of stat categories.
+            - vt_keys (list): Keys present in stats.
+            - vt_vals (list): Values (counts) for each stat key.
+            - vt_asn (str): Autonomous system name.
+            - vt_country (str): Country of origin.
+            - vt_rep (int): VirusTotal reputation score.
+            - vt_malicious (int): Count of malicious detections.
+            - related_domains (list): Domains recently resolved to this IP.
+
+    Notes:
+        - Handles API errors gracefully.
+        - Returns empty/default values if the lookup fails.
+    """
+
+==================================================================================================
+
+def fetch_abuseipdb(ip: str, headers: dict, timeout: int = 20):
+    """
+    Retrieve threat intelligence data from AbuseIPDB for a given IP address.
+
+    Parameters:
+        ip (str): The IP address to query.
+        headers (dict): Headers including the AbuseIPDB API key.
+        timeout (int): Request timeout in seconds (default = 20).
+
+    Returns:
+        tuple: (abuse_score, abuse_total_reports, abuse_country)
+            - abuse_score (int): Confidence score indicating maliciousness.
+            - abuse_total_reports (int): Total number of user-submitted reports.
+            - abuse_country (str): Country of the IP origin.
+
+    Notes:
+        - Automatically handles HTTP and connection errors.
+        - Returns zeros and 'Unknown' if the request fails.
+    """
+
+==================================================================================================
+
+def fetch_otx(ip: str, headers: dict, timeout: int = 20):
+    """
+    Get threat intelligence data from AlienVault OTX for a specific IP.
+
+    Parameters:
+        ip (str): Target IPv4 address.
+        headers (dict): Headers including the OTX API key.
+        timeout (int): Request timeout duration.
+
+    Returns:
+        tuple: (pulse_count, otx_tags, otx_malware_families, otx_geo)
+            - pulse_count (int): Number of OTX pulses related to the IP.
+            - otx_tags (list): Tags associated with the IP.
+            - otx_malware_families (list): Detected malware families.
+            - otx_geo (str): Country code (geolocation).
+
+    Notes:
+        - Returns default values if lookup fails or times out.
+    """
+
+==================================================================================================
+
+def prepare_tmpdir(ip):
+    """
+    Create a dedicated temporary working directory for storing output files.
+
+    Parameters:
+        ip (str): The target IP address used to name the folder.
+
+    Returns:
+        str: Path to the created directory.
+
+    Notes:
+        - Uses the IP address in the folder name (dots replaced with underscores).
+        - Global variable 'tmpdir' is set for later file saves.
+    """
+
+==================================================================================================
+
+def create_vt_detection_bar(ip, vt_keys, vt_vals):
+    """
+    Generate and save a bar chart showing VirusTotal detection counts per category.
+
+    Parameters:
+        ip (str): Target IP address.
+        vt_keys (list): List of category names (e.g., malicious, harmless).
+        vt_vals (list): Corresponding counts per category.
+
+    Returns:
+        str: File path to the saved bar chart image.
+
+    Notes:
+        - Displays numerical labels on bars.
+        - If no data available, displays a placeholder message.
+    """
+
+==================================================================================================
+
+def create_vt_pie(ip, vt_keys, vt_vals):
+    """
+    Create a pie chart visualizing the proportion of VirusTotal detections.
+
+    Parameters:
+        ip (str): Target IP address.
+        vt_keys (list): Detection categories.
+        vt_vals (list): Counts for each category.
+
+    Returns:
+        str or None: Path to saved image if data exists, else None.
+    """
+
+==================================================================================================
+
+def create_comparison_bar(vt_rep, abuse_score, pulse_count):
+    """
+    Plot a comparison bar chart between VirusTotal, AbuseIPDB, and OTX results.
+
+    Parameters:
+        vt_rep (float): VirusTotal reputation score.
+        abuse_score (float): AbuseIPDB abuse confidence score.
+        pulse_count (int): OTX pulse count.
+
+    Returns:
+        str: Path to the saved comparison chart image.
+    """
+
+==================================================================================================
+
+def build_whois_graph(ip: str, headers: dict, max_owners: int = 20):
+    """
+    Build and visualize a WHOIS ownership graph using VirusTotal data.
+
+    Parameters:
+        ip (str): Target IP address.
+        headers (dict): Headers with VirusTotal API key.
+        max_owners (int): Maximum number of domains to include.
+
+    Returns:
+        str or None: Path to the saved WHOIS graph image, or None if no data.
+
+    Notes:
+        - Uses NetworkX for graph structure and Matplotlib for rendering.
+        - Nodes represent IPs, domains, and owners.
+        - Edges show ownership or resolution relationships.
+    """
+
+==================================================================================================
+
+def build_vt_resolution_graph(ip: str, headers: dict, max_domains: int = 150):
+    """
+    Generate a VirusTotal resolution graph showing domains linked to an IP.
+
+    Parameters:
+        ip (str): Target IP address.
+        headers (dict): Headers with VirusTotal API key.
+        max_domains (int): Limit on number of domains to fetch (default = 150).
+
+    Returns:
+        tuple: (path, domains)
+            - path (str): Path to the saved visualization image.
+            - domains (list): List of domains resolved to the IP.
+
+    Notes:
+        - Domain nodes are color-coded based on detection severity.
+        - Fetches analysis stats for each related domain.
+    """
+
+==================================================================================================
+
+def create_abuseipdb_category_graph(ip: str, headers: dict):
+    """
+    Fetch AbuseIPDB reports and create a bar graph showing report categories.
+
+    Parameters:
+        ip (str): Target IP address.
+        headers (dict): Headers with AbuseIPDB API key.
+
+    Returns:
+        str or None: File path to the saved image, or None if request fails.
+
+    Notes:
+        - Displays categories such as 'Phishing', 'Port Scan', etc.
+        - Counts number of reports per category.
+        - Horizontal bar chart visualization.
+    """
+
+==================================================================================================
+
+def build_folium_map(ip, vt_data, vt_asn, vt_country, vt_rep, vt_malicious,
+                     abuse_score, abuse_total_reports, pulse_count):
+    """
+    Create an interactive HTML map showing geolocation of the analyzed IP.
+
+    Parameters:
+        ip (str): Target IP address.
+        vt_data (dict): VirusTotal IP data containing geo-info.
+        vt_asn (str): ASN owner of the IP.
+        vt_country (str): Country code.
+        vt_rep (int): VirusTotal reputation score.
+        vt_malicious (int): Count of malicious detections.
+        abuse_score (int): AbuseIPDB confidence score.
+        abuse_total_reports (int): Number of reports on AbuseIPDB.
+        pulse_count (int): OTX pulse count.
+
+    Returns:
+        str: File path of the generated HTML map.
+
+    Notes:
+        - Uses Folium for rendering.
+        - Fallbacks to `ip-api.com` if VirusTotal lacks geo coordinates.
+        - Marker color represents threat level.
+    """
+
+==================================================================================================
+
+def main():
+    """
+    Main execution loop of the program.
+
+    Workflow:
+        1. Display splash screen and prompt user for an IP.
+        2. Prepare temporary working directory.
+        3. Fetch threat intelligence data from:
+            - VirusTotal
+            - AbuseIPDB
+            - AlienVault OTX
+        4. Generate and save multiple visualizations:
+            - Detection bar chart & pie chart
+            - Comparison bar
+            - WHOIS ownership graph
+            - VT resolution graph
+            - AbuseIPDB category graph
+            - Interactive Folium map
+        5. Display output file paths to the user.
+
+    Notes:
+        - Loops until user types 'exit'.
+        - Handles KeyboardInterrupt gracefully.
+    """
