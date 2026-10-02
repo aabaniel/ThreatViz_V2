@@ -10,7 +10,9 @@ The program uses three APIs: VirusTotal, AbuseIPDB, and AlienVault OTX.
 
 **Dependencies/Libraries to install:**
 
-pip install requests matplotlib networkx folium os time
+pip install -r requirements.txt
+
+The project also uses standard-library modules such as `os`, `time`, `csv`, and `json`, which do not need separate installation.
 
 # ThreatViz program flow:
 

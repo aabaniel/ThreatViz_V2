@@ -35,14 +35,37 @@ import json
 
 #===============================================================#
 
-VT_API_KEY = "I AINT GIVING YOU MINE"
-ABUSE_API_KEY = "I AINT GIVING YOU MINE"
-OTX_API_KEY = "I AINT GIVING YOU MINE"  
+def load_env_file(env_path=".env"):
+    if not os.path.exists(env_path):
+        return
+
+    try:
+        with open(env_path, "r", encoding="utf-8") as env_file:
+            for raw_line in env_file:
+                line = raw_line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+
+                key, value = line.split("=", 1)
+                key = key.strip()
+                value = value.strip().strip('"').strip("'")
+
+                if key and key not in os.environ:
+                    os.environ[key] = value
+    except Exception as e:
+        print(f"Failed to load .env file: {e}")
+
+
+load_env_file()
+
+VT_API_KEY = os.getenv("VT_API_KEY", "")
+ABUSE_API_KEY = os.getenv("ABUSE_API_KEY", "")
+OTX_API_KEY = os.getenv("OTX_API_KEY", "")
 
 # initialize keys into variables
 
-HEADERS_VT = {"x-apikey": VT_API_KEY}
-HEADERS_ABUSE = {"Key": ABUSE_API_KEY, "Accept": "application/json"}
+HEADERS_VT = {"x-apikey": VT_API_KEY} if VT_API_KEY else {}
+HEADERS_ABUSE = {"Key": ABUSE_API_KEY, "Accept": "application/json"} if ABUSE_API_KEY else {"Accept": "application/json"}
 HEADERS_OTX = {"X-OTX-API-KEY": OTX_API_KEY} if OTX_API_KEY else {}
 
 #===============================================================#
