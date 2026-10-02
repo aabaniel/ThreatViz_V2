@@ -1,13 +1,23 @@
 ## To-Do List
 
-- Extract the main() flow into a callable analysis controller for a single IP.
-- Split the script into clear layers for validation, data fetch, report generation, and GUI presentation.
-- Build a Tkinter window with a professional header, IP input, Run/Clear/Exit controls, a progress log, and a results panel.
-- Run analysis work on a background thread so the UI stays responsive.
-- Add actions to open the generated CSV, HTML map, and PNG chart outputs.
-- Keep configuration loading from .env and preserve the current report folder structure.
-- Add structured logging, consistent errors, and a GUI startup path that does not require terminal interaction.
-- Update the README with GUI usage and secret setup instructions.
+- Identify the current main() flow and extract the reusable analysis steps.
+- Move the per-IP work into a function that accepts one IP and returns the run result.
+- Add input validation for both IPv4 and IPv6.
+- Reject empty or invalid IP input before any API calls start.
+- Split the code into separate parts for validation, fetching, reporting, and GUI wiring.
+- Keep the existing providers and add Pulsedive, Shodan InternetDB, Criminal IP, and IPQualityScore.
+- Add a fetch function for each new provider.
+- Map each new provider’s result into the report output.
+- Design a small Tkinter window with input, buttons, progress, and results.
+- Add a run action that starts the full analysis.
+- Run the analysis on a background worker so the UI stays responsive.
+- Send progress and completion updates back to the window.
+- Add buttons to open the CSV, HTML map, and chart files.
+- Keep .env loading working in the GUI version.
+- Preserve the current report folder name and file layout.
+- Add readable logs and consistent error messages.
+- Start the GUI directly without terminal prompts.
+- Update the README with the GUI launch steps and secret setup.
 
 ## Guiding decisions
 
